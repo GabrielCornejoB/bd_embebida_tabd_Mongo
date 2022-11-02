@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuencas</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+
+</head>
+<body>
+    <div class="popup" id="popup_info">
+        <div class="popup_header">
+            <div class="title">Información</div>
+            <button class="close_btn" onclick="toggle_popup('popup_info')">&times;</button>
+        </div>
+        <div class="popup_body">
+            Actualmente te encuentras en la tabla Cuencas Hidrográficas, esta es una de las dos tablas
+            secundarias que tiene la Base de Datos, en esta podrás encontrar las distintas cuencas 
+            Hidrográficas donde se realizan actividades de Pesca en el país.
+            <br><br>
+            A diferencia de la tabla Pescas, en esta solo se específica el nombre del método, ningún otro dato
+            es necesario.
+        </div>
+    </div>
+    <div class="popup" id="popup_help">
+        <div class="popup_header">
+            <div class="title">Ayuda</div>
+            <button class="close_btn" onclick="toggle_popup('popup_help')">&times;</button>
+        </div>
+        <div class="popup_body">
+            En esta página puedes realizar 3 acciones distintas sobre la tabla Cuencas Hidrográficas, las acciones son:
+            Agregar una nueva Cuenca, Editar una Cuenca existente o Eliminar una Cuenca existente. Estas 
+            operaciones las puedes realizar en las tarjetas que se encuentran en la parte derecha, a continuación
+            se explicará como realizar cada una de las operaciones:
+            <br><br>
+            Para añadir una nueva Cuenca debes simplemente ingresar el nombre y presionar el símbolo +.
+            <br><br>
+            Para editar una Cuenca existente primero debes seleccionar la Cuenca que deseas modificar, luego
+            debes llenar el campo con el nuevo nombre para la Cuenca y luego presionar el símbolo del lápiz.
+            <br><br>
+            Para eliminar solamente debes seleccionar la Cuenca que deseas eliminar y presionar el símbolo de 
+            la basura. CUIDADO: Esta acción no tiene vuelta atras.
+        </div>
+    </div>
+    <div class="popup" id="popup_exit">
+        <div class="popup_header">
+            <div class="title">¿Qué es esto?</div>
+            <button class="close_btn" onclick="toggle_popup('popup_exit')">&times;</button>
+        </div>
+        <div class="popup_body">
+            Esto no funciona jsjsjs, pero si quieres cerrar la aplicación presiona la combinación de teclas: Ctrl + w
+        </div>
+    </div>
+    <div class="popup popup_msg" id="popup_msg">
+        <div class="popup_header">
+            <div class="title" id="popup_title"></div>
+            <button class="close_btn" onclick="toggle_popup('popup_msg')">&times;</button>
+        </div>
+        <div class="popup_body" id="popup_body">
+        </div>
+    </div>
+    <div id="overlay"></div>
+
+    <div class="panel">
+        <div class="left_panel" id="nav">
+        </div>
+        <div class="main_panel">
+            <div class="card info main_title">
+                <h1>Tabla Cuencas Hidrográficas</h1>
+                <!-- mensaje de error/success -->
+            </div>
+            <div class="card crud create">
+                <div class="card_title">
+                    <h2>CREATE</h2>
+                </div>
+                <div class="card_content">
+                    <div class="inputs">
+                        <div class="input_wrapper">
+                            <p>Nombre Cuenca</p>
+                            <input class="crud_input" type="text" placeholder="Ej: Río Crotolamo" id="create_arg_1">
+                        </div>               
+                    </div>
+                    <div class="submit">
+                        <br>
+                        <span class="material-symbols-outlined crud_create">add</span>
+                    </div>
+                </div>          
+            </div>
+            <div class="table">
+                <table class="content_table" id="data"></table>
+            </div>              
+            <div class="card crud update">
+                <div class="card_title">
+                    <h2>UPDATE</h2>
+                </div>
+                <div class="card_content">
+                    <div class="inputs">
+                        <div class="input_wrapper">
+                            <p>ID Cuenca</p>
+                            <select class="crud_select" id="update_select"></select>
+                        </div>
+                        <div class="input_wrapper">
+                            <p>Nuevo nombre Cuenca</p>
+                            <input class="crud_input" type="text" placeholder="Nuevo nombre" id="update_arg_1">
+                        </div>
+                    </div>
+                    <div class="submit">
+                        <br>
+                        <span class="material-symbols-outlined crud_update">edit</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card crud delete">
+                <div class="card_title">
+                    <h2>DELETE</h2>
+                </div>
+                <div class="card_content">
+                    <div class="inputs">
+                        <div class="input_wrapper">
+                            <p>ID Cuenca</p>
+                            <select class="crud_select" id="delete_select">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="submit">
+                        <br>
+                        <span class="material-symbols-outlined crud_delete">delete</span>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <script type="text/javascript" src="js/functions.js"></script>
+    <script type = "text/javascript" src="js/crud.js"></script>
+    <script type = "text/javascript" src = "eel.js"></script> 
+</body>
+</html>

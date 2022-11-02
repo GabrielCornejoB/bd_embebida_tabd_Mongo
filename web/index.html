@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pescas AUNAP</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+</head>
+<body>
+    <div class="popup" id="popup_tutorial">
+        <div class="popup_header">
+            <div class="title">¿Cómo empezar?</div>
+            <button class="close_btn" onclick="toggle_popup('popup_tutorial')">&times;</button>
+        </div>
+        <div class="popup_body">
+            En este momento te encuentras en el Panel de Inicio, en este podrás ver el registro de Pescas que hay 
+            actualmente, el registro de cambios en la base de datos, link al repositorio del proyecto y un link a
+            la página de la AUNAP. Consejo: Puedes hacer scroll en tablas y tarjetas para visualizar más contenido
+            así la barra de scroll no sea visible.
+            <br><br>
+            En la parte de la izquierda encontrarás la barra de navegación de la aplicación, donde podrás volver
+            al inicio o acceder a alguna de las distintas tablas de la base de datos, donde podrás realizar operaciones
+            CRUD.
+            <br><br>
+            Los simbolos rodeados por un circulo te mostrarán información sobre la página en la que te encuentras 
+            actualmente y ayuda de como utilizar o que acciones puedes realizar. Esto sería todo, ¡el resto es que
+            explores la aplicación!
+        </div>
+    </div>
+    <div class="popup" id="popup_logs">
+        <div class="popup_header">
+            <div class="titulo">Logs</div>
+            <button class="close_btn" onclick="toggle_popup('popup_logs')">&times;</button>
+        </div>
+        <div class="popup_body" id="logs_div">
+
+        </div>
+    </div>
+    <div class="popup" id="popup_info">
+        <div class="popup_header">
+            <div class="title">Información</div>
+            <button class="close_btn" onclick="toggle_popup('popup_info')">&times;</button>
+        </div>
+        <div class="popup_body">
+            Actualmente te encuentras en la página de Inicio, aquí no podrás realizar realmente ningún cambio
+            en la base de datos, solo podrás visualizar el Registro de las Pescas y acceder a información 
+            adicional de interés.
+            <br><br>
+            Si desea conocer más sobre la AUNAP puede presionar el primer botón el cual te redigirirá a la 
+            página oficial de la organización, si desea conocer como empezar a usar la aplicación presione 
+            segunda tarjeta, si desea revisar el historial de cambios en la Base de Datos puede mirar la tercera
+            y si desea acceder al repositorio del proyecto presione la cuarta, en el repositorio habrá información 
+            sobre el proyecto, las librerías usadas, el código y más.
+        </div>
+    </div>
+    <div class="popup" id="popup_help">
+        <div class="popup_header">
+            <div class="title">Ayuda</div>
+            <button class="close_btn" onclick="toggle_popup('popup_help')">&times;</button>
+        </div>
+        <div class="popup_body">
+            Literalmente en esta página hay un botón GIGANTE que dice "¿Cómo empezar?", CREO, que TAL VEZ
+            deberías empezar por ahí, pero tal vez solamente.
+        </div>
+    </div>
+    <div class="popup" id="popup_exit">
+        <div class="popup_header">
+            <div class="title">¿Qué es esto?</div>
+            <button class="close_btn" onclick="toggle_popup('popup_exit')">&times;</button>
+        </div>
+        <div class="popup_body">
+            Esto no funciona jsjsjs, pero si quieres cerrar la aplicación presiona la combinación de teclas: Ctrl + w
+        </div>
+    </div>
+    <div class="popup popup_msg" id="popup_msg">
+        <div class="popup_header">
+            <div class="title" id="popup_title"></div>
+            <button class="close_btn" onclick="toggle_popup('popup_msg')">&times;</button>
+        </div>
+        <div class="popup_body" id="popup_body">
+        </div>
+    </div>
+    <div id="overlay"></div>
+
+    <div class="panel">
+        <div class="left_panel" id="nav"></div>
+        <div class="index_panel">
+            <div class="index_title index_box">
+                <h1>Pescas AUNAP</h1>
+            </div>    
+            <div class="index_cards">
+                <div class="index_card index_box" title="Sitio web de la AUNAP" onclick="new_window('https://www.aunap.gov.co/')">
+                    <img src="icons/AUNAP248X107.svg" style="width: 90%; height: auto;">
+                </div>
+                <div class="index_card index_box" onclick="toggle_popup('popup_tutorial')"> 
+                    <h3>¿Cómo empezar?</h3>
+                </div>
+                <div class="index_card index_box logs">
+                    <h3>Logs</h3>
+                </div>
+                <div class="index_card index_box" title="Repositorio del proyecto" onclick="new_window('https://github.com/GabrielCornejoB/bd_embebida_tabd')">
+                    <img src="icons/iconmonstr-github-1.svg" style="width: 40%; height: auto;">
+                </div>
+            </div>
+            <div class="index_view">
+                <div class="view_title index_box">
+                    <h3>Registro de Pescas AUNAP</h3>  
+                </div>
+                <div class="view_table index_box">
+                    <table class="content_table" id="data"></table>
+                </div>
+                <div class="view_count index_box">
+                    <div class="count_title">
+                        <h4>Pescas Registradas</h4>
+                    </div>
+                    <div class="count">
+                        <p id="count_pescas"></p>
+                    </div>
+                </div>
+            </div> 
+        </div>
+    </div>
+    <script type="text/javascript" src="js/functions.js"></script>
+    <script type="text/javascript" src="js/crud.js"></script>
+    <script type = "text/javascript" src = "eel.js"></script> 
+</body>
+</html>
