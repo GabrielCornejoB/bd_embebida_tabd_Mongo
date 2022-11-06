@@ -9,19 +9,27 @@ except Exception as e:
     print("Conexión con mongo falló:",e)
 
 db = client.pescasAUNAP
-collections = db.list_collection_names()
-print(collections)
+
+cols = db.list_collection_names()
+
+def create(data_dict, collection_name):
+    try:
+        if collection_name not in cols:
+            raise Exception("Nombre de colección no valido")
+
+        col = db[collection_name]
+        col.insert_one(data_dict)
+    except WriteError as e:
+        err_desc = str(e).split("'description': ",1)[1]
+        print("Error al insertar los datos:", err_desc.split("'", 2)[1])
+    except Exception as e:
+        print(e)
 
 pesca_test = {
-    "cuenca": "0000njkr",
+    "cuenca": "Río Sinú",
     "metodo": "Atarraya",
     "fecha": datetime.now(),
-    "peso_total_pesca": 3.1
+    "peso_total_pesca": 30.65
 }
-try:
-    db.pescas.insert_one(pesca_test)
-except WriteError as e:
-    err_desc = str(e).split("'description': ",1)[1]
-    print(err_desc.split("'", 2)[1])
-else:
-    print("Exito!")
+
+create(pesca_test, 'pescas')

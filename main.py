@@ -40,6 +40,7 @@ def update_schema_validation():
         client = MongoClient(conn_str)
         db = client.pescasAUNAP
     except Exception as e:
+        client.close()
         print("Connection to DB failed:",e)
     else:
         try:
@@ -48,7 +49,8 @@ def update_schema_validation():
             print("Schema validation failed:",e)
         else:
             print("Schema validation updated succesfully!")
-
+        client.close()
+    
 @eel.expose
 def read():
     print('read')
