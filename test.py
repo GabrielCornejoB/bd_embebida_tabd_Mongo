@@ -36,6 +36,15 @@ def update_enum(enum_name, old_val, new_val):
         global enum_metodos
         enum_metodos = [new_val if x == old_val else x for x in enum_metodos]
 
+def delete_from_enum(enum_name, val):
+    if enum_name == "enum_cuencas":
+        global enum_cuencas
+        enum_cuencas.remove(val)
+    elif enum_name == "enum_metodos":
+        global enum_metodos
+        enum_metodos.remove(val)
+        
+
 def update_schema_validation():  
     try:
         global enum_cuencas
@@ -125,6 +134,8 @@ def update(_id, data_dict, collection_name):
             update_json = {
                 "$set": data_dict
             }
+            col.find_one_and_update({'_id': _id}, update_json)
+
             if collection_name != "pescas":
                 if collection_name == "cuencas":
                     update_enum("enum_cuencas", old_doc['cuenca'], data_dict['cuenca'])
@@ -133,13 +144,45 @@ def update(_id, data_dict, collection_name):
                 elif collection_name == "metodos":
                     update_enum("enum_metodos", old_doc['metodo'], data_dict['metodo'])
                     update_schema_validation()
-                    db['pescas'].update_many({'metodo': old_doc['metodo']},{ "$set": { 'metodo': data_dict['metodo']}})
-            col.find_one_and_update({'_id': _id}, update_json)
-
+                    db['pescas'].update_many({'metodo': old_doc['metodo']},{ "$set": { 'metodo': data_dict['metodo']}})        
+    except WriteError as e:
+        err_desc = str(e).split("'description': ",1)[1]
+        print("Error al insertar los datos:", err_desc.split("'", 2)[1])
     except Exception as e:
         print(e)
 
-# def delete(_id, collection_name):
+def delete(_id, collection_name):
+    try:
+        if collection_name not in cols:
+            raise Exception("Nombre de colección no valido")
+        col = db[collection_name]
+        _id = ObjectId(_id)
+        old_doc = col.find_one({'_id': _id})
 
+        is_related = True
 
-update("63644453cadd66da5dae5f01", {"cuenca": "Río Magdalena"}, "cuencas")
+        if collection_name != "pescas":
+            if collection_name == "cuencas":
+                cuencas_count = db['pescas'].count_documents({"cuenca": old_doc['cuenca']})
+                if cuencas_count == 0:
+                    is_related = False
+                    delete_from_enum("enum_cuencas", old_doc['cuenca'])
+                    update_schema_validation()
+            if collection_name == "metodos":
+                metodos_count = db['pescas'].count_documents({'metodo': old_doc['metodo']})
+                if metodos_count == 0:
+                    is_related = False
+                    delete_from_enum("enum_metodos", old_doc['metodo'])
+                    update_schema_validation()
+        else:
+            is_related = False
+        if not is_related:
+            col.find_one_and_delete({"_id": _id})
+        else:
+            raise Exception("El doc se encuentra en uso en la colección Pescas")
+    except Exception as e:
+        print(e)
+    else:
+        print("siu")
+
+create({"cuenca": "Río Amazonas" }, "cuencas")
