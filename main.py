@@ -26,6 +26,31 @@ eel.init("web")
 def jsonize(text):
     return json.dumps(text, ensure_ascii=False, default=str).encode('utf-8').decode()
 
+def append_to_enum(enum_name, new_val):
+    if enum_name == "enum_cuencas":
+        global enum_cuencas
+        enum_cuencas.append(new_val)
+    elif enum_name == "enum_metodos":
+        global enum_metodos
+        enum_metodos.append(new_val)
+
+def update_enum(enum_name, old_val, new_val):
+    if enum_name == "enum_cuencas":
+        global enum_cuencas
+        enum_cuencas = [new_val if x == old_val else x for x in enum_cuencas]
+    elif enum_name == "enum_metodos":
+        global enum_metodos
+        enum_metodos = [new_val if x == old_val else x for x in enum_metodos]
+
+def delete_from_enum(enum_name, val):
+    if enum_name == "enum_cuencas":
+        global enum_cuencas
+        enum_cuencas.remove(val)
+    elif enum_name == "enum_metodos":
+        global enum_metodos
+        enum_metodos.remove(val)
+   
+
 def update_schema_validation():
     try:
         client = MongoClient(conn_str)
@@ -64,7 +89,8 @@ def update_schema_validation():
         }
             db.command("collMod", "pescas", validator=schema_validation)
         except Exception as e:
-            return jsonize("[ERR]Schema validation failed:" + str(e))
+            client.close()
+            return jsonize("[ERR]Schema validation failed:" + str(e))    
         client.close()
     
 @eel.expose
@@ -73,25 +99,66 @@ def read(collection_name):
         client = MongoClient(conn_str)
         db = client.pescasAUNAP
     except Exception as e:
-        return "[ERR]Conexión con mongo falló:" + str(e)
+        client.close()
+        return jsonize("[ERR]Conexión con mongo falló:" + str(e))
 
     try:
         if collection_name not in cols:
-            return "[ERR]Nombre de colección no valido"
+            return jsonize("[ERR]Nombre de colección no valido")
 
         col = db[collection_name]
         documents = col.find()
+
     except Exception as e:
-        return "[ERR]" + str(e)
+        client.close()
+        return jsonize("[ERR]" + str(e))
     else:
         l_docs = []
         for doc in documents:
             l_docs.append(doc)
+        client.close()
         return jsonize(l_docs)
 
 @eel.expose
-def create():
-    print('create')
+def create(data_dict, collection_name):
+    try:
+        client = MongoClient(conn_str)
+        db = client.pescasAUNAP
+    except Exception as e:
+        return jsonize("[ERR]Conexión con mongo falló:" + str(e))
+
+    try:
+        if collection_name not in cols:
+            return jsonize("[ERR]Nombre de colección no valido")
+        dict_keys = list(data_dict.keys())
+        dict_keys.sort()
+        if (collection_name == "pescas" and not array_equal(dict_keys, pescas_keys)) or (collection_name == "cuencas" and not array_equal(list(data_dict.keys()), ['cuenca'])) or (collection_name == "metodos" and not array_equal(list(data_dict.keys()), ['metodo'])):
+            return jsonize("[ERR]Llaves del documento a ingresar no validas")
+
+        if collection_name == "cuencas":
+            append_to_enum("enum_cuencas", data_dict['cuenca'])
+            update_schema_validation()
+        elif collection_name == "metodos":
+            append_to_enum("enum_metodos", data_dict['metodo'])
+            update_schema_validation()
+
+        col = db[collection_name]
+        if collection_name == "pescas":
+            data_dict['fecha'] = datetime.strptime(data_dict['fecha'], "%Y-%m-%d")
+            data_dict['peso_total_pesca'] = float(data_dict['peso_total_pesca'])
+        col.insert_one(data_dict)
+        
+    except WriteError as e:
+        client.close()
+        err_desc = str(e).split("'description': ",1)[1]
+        return jsonize("[ERR]" + err_desc.split("'", 2)[1])
+    except Exception as e:
+        client.close()
+        return jsonize("[ERR]" + str(e))
+    else:
+        client.close()
+        return jsonize("[MSG]Operación realizada con exito :)")
+
 
 @eel.expose
 def update():

@@ -1,6 +1,6 @@
 function update_table () {
     console.log("update_table() called");
-    eel.select(table_name)(load_table);
+    eel.read(table_name)(load_table);
 }
 
 window.onload = function () { 
@@ -23,7 +23,7 @@ function load_select_met (output) {
         return
     }
     select_string = "<option disabled selected value style'color:#cfcfcf59'>---</option>";
-    parsed_output.forEach(row => select_string = select_string.concat("<option value='", row['_id'], "'>", row['metodo'], "</option>"));
+    parsed_output.forEach(row => select_string = select_string.concat("<option value='", row['metodo'], "'>", row['metodo'], "</option>"));
     document.getElementById("create_arg_2").innerHTML = select_string;
     document.getElementById("update_arg_2").innerHTML = select_string;
 }
@@ -34,7 +34,7 @@ function load_select_cue (output) {
         return
     }
     select_string = "<option disabled selected value style'color:#cfcfcf59'>---</option>";
-    parsed_output.forEach(row => select_string = select_string.concat("<option value='", row['_id'], "'>", row['cuenca'], "</option>"));
+    parsed_output.forEach(row => select_string = select_string.concat("<option value='", row['cuenca'], "'>", row['cuenca'], "</option>"));
     document.getElementById("create_arg_1").innerHTML = select_string;
     document.getElementById("update_arg_1").innerHTML = select_string;
 }
@@ -56,15 +56,13 @@ function load_table (output) {
         if (table_name === "cuencas") {
             table_string = "<thead><tr><th>Cuenca Hidrográfica</th></tr></thead><tbody>";
             parsed_output.forEach(row => table_string = table_string.concat("<tr><td>", row['cuenca'], "</td></tr>"));
-            parsed_output.forEach(row => select_string  = select_string.concat("<option value='", row['_id'], "'>", row['cuenca'], "</option>"));
+            parsed_output.forEach(row => select_string  = select_string.concat("<option value='", row['cuenca'], "'>", row['cuenca'], "</option>"));
         }
         else if (table_name === "metodos") {
             table_string = "<thead><tr><th>Método de pesca</th></tr></thead><tbody>";
             parsed_output.forEach(row => table_string = table_string.concat("<tr><td>", row['metodo'], "</td></tr>"));
-            parsed_output.forEach(row => select_string  = select_string.concat("<option value='", row['_id'], "'>", row['metodo'], "</option>"));
+            parsed_output.forEach(row => select_string  = select_string.concat("<option value='", row['metodo'], "'>", row['metodo'], "</option>"));
         }
-        
-        
     }
     else if (table_name === "pescas") {
         table_string = "<thead><tr><th>Id cuenca</th><th>Id método</th><th>Fecha</th><th>Peso total</th></tr></thead><tbody>";
@@ -86,36 +84,50 @@ function load_table (output) {
 }
 
 //CREATE
-// if (table_name !== "index") {
-//     document.querySelector(".crud_create").onclick = function() {
-//         l_args = []
-//         create_arg_1 = document.getElementById("create_arg_1").value;
-//         l_args.push(create_arg_1);
+if (table_name !== "index") {
+    document.querySelector(".crud_create").onclick = function() {
+        l_args = []
+        create_arg_1 = document.getElementById("create_arg_1").value;
     
-//         if (table_name === "pescas") {
-//             create_arg_2 = document.getElementById("create_arg_2").value;
-//             create_arg_3 = document.getElementById("create_arg_3").value;
-//             create_arg_4 = document.getElementById("create_arg_4").value;
-//             l_args.push(create_arg_2);
-//             l_args.push(create_arg_3);
-//             l_args.push(create_arg_4);
-//         }
-//         eel.create(table_name, l_args)(add_register);    
-//     }
-// }
-// function add_register(output) {
-//     console.log("CREATE");
-//     clean_fields();
-//     parsed_output = JSON.parse(output);
-//     if (parsed_output.startsWith("[ERR]")) {
-//         write_error(parsed_output);
-//         return
-//     }
-//     else if (parsed_output.startsWith("[MSG]")) {
-//         write_msg(parsed_output);
-//         update_table();
-//     }
-// }
+        if (table_name === "pescas") {
+            create_arg_2 = document.getElementById("create_arg_2").value;
+            create_arg_3 = document.getElementById("create_arg_3").value;
+            create_arg_4 = document.getElementById("create_arg_4").value;
+            json_args = {
+                "cuenca": create_arg_1,
+                "metodo": create_arg_2,
+                "fecha": create_arg_3,
+                "peso_total_pesca": create_arg_4
+            }
+            eel.create(json_args, "pescas")(add_register)
+        }
+        else if (table_name === "cuencas") {
+            json_args = {
+                "cuenca": create_arg_1
+            }
+            eel.create(json_args, "cuencas")(add_register)
+        }
+        else if (table_name === "metodos") {
+            json_args = {
+                "metodo": create_arg_1
+            }
+            eel.create(json_args, "metodos")(add_register)
+        }  
+    }
+}
+function add_register(output) {
+    console.log("CREATE");
+    clean_fields();
+    parsed_output = JSON.parse(output);
+    if (parsed_output.startsWith("[ERR]")) {
+        write_error(parsed_output);
+        return
+    }
+    else if (parsed_output.startsWith("[MSG]")) {
+        write_msg(parsed_output);
+        update_table();
+    }
+}
 
 // UPDATE
 // if (table_name !== "index") {
