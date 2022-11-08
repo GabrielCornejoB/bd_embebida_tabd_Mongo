@@ -3,6 +3,7 @@ from pymongo.errors import WriteError
 from datetime import datetime
 from numpy import array_equal
 from bson.objectid import ObjectId
+import json
 
 conn_str = "mongodb://localhost:27017"
 pescas_keys = ['cuenca', 'metodo', 'fecha', 'peso_total_pesca']
@@ -44,7 +45,6 @@ def delete_from_enum(enum_name, val):
         global enum_metodos
         enum_metodos.remove(val)
         
-
 def update_schema_validation():  
     try:
         global enum_cuencas
@@ -83,6 +83,8 @@ def update_schema_validation():
         print("Schema validation updated succesfully!")
 
 cols = db.list_collection_names()
+
+
 def create(data_dict, collection_name):
     try:
         if collection_name not in cols:
@@ -114,8 +116,11 @@ def read(collection_name):
     except Exception as e:
         print(e)
     else:
+        # print(documents[0]['fecha'])
         for doc in documents:
             print(doc, "\n")
+
+read("pescas")
 
 def update(_id, data_dict, collection_name):
     try:
@@ -185,4 +190,4 @@ def delete(_id, collection_name):
     else:
         print("siu")
 
-create({"cuenca": "Río Amazonas" }, "cuencas")
+# create({"cuenca": "Río Amazonas" }, "cuencas")
