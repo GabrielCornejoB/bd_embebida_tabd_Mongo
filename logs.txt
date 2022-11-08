@@ -1,2 +1,6 @@
 Registro de cambios en base de datos Pescas AUNAP
 <br><br>
+[2022-11-08 14:48]	CREATE on cuencas, args:{'cuenca': 'Río Laureles', '_id': ObjectId('636ab2a3521742e6cd876898')}<br>
+[2022-11-08 14:50]	UPDATE on cuencas, id: 636aa6c0282eb119ef5f93b1, args: {'cuenca': 'Río Sistemas'}<br>
+[2022-11-08 14:51]	DELETE on cuencas, (id: 636aa6c0282eb119ef5f93b1)<br>
+[2022-11-08 14:51]	CREATE on pescas, args:{'cuenca': 'Río Laureles', 'metodo': 'Chinchorro', 'fecha': datetime.datetime(2022, 2, 21, 0, 0), 'peso_total_pesca': 15.0, '_id': ObjectId('636ab33a1ee92d21e0ee34a2')}<br>

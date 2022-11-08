@@ -157,6 +157,8 @@ def create(data_dict, collection_name):
         return jsonize("[ERR]" + str(e))
     else:
         client.close()
+        with open("logs.txt", 'a', encoding='utf-8') as logs:
+            logs.write("[" + str(datetime.now())[0:16] + "]\tCREATE on " + collection_name + ", args:" + str(data_dict) + "<br>\n")
         return jsonize("[MSG]Operación realizada con exito :)")
 
 
@@ -184,7 +186,7 @@ def update(_id, data_dict, collection_name):
             if collection_name == "pescas":
                 data_dict['fecha'] = datetime.strptime(data_dict['fecha'], "%Y-%m-%d")
                 data_dict['peso_total_pesca'] = float(data_dict['peso_total_pesca'])
-                
+
             update_json = {
                 "$set": data_dict
             }
@@ -205,6 +207,8 @@ def update(_id, data_dict, collection_name):
     except Exception as e:
         return jsonize("[ERR]" + str(e))
     else:
+        with open("logs.txt", 'a', encoding='utf-8') as logs:
+            logs.write("[" + str(datetime.now())[0:16] + "]\tUPDATE on " + collection_name + ", id: " + str(_id) + ", args: " + str(data_dict) + "<br>\n")
         return jsonize("[MSG]Operación realizada con exito :)")
 
 @eel.expose
@@ -245,6 +249,15 @@ def delete(_id, collection_name):
     except Exception as e:
         return jsonize("[ERR:]" + str(e))
     else:
+        with open("logs.txt", 'a', encoding='utf-8') as logs:
+            logs.write("[" + str(datetime.now())[0:16] + "]\tDELETE on " + collection_name + ", (id: " + str(_id) + ")<br>\n")
         return jsonize("[MSG]Operación realizada con exito :)")
+
+@eel.expose
+def get_logs():
+    logs =  open("logs.txt", 'r', encoding='utf-8')
+    data = logs.read()
+    logs.close()
+    return jsonize(data)
 
 eel.start("index.html", cmdline_args=['--start-fullscreen'])
