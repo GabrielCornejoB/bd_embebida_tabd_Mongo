@@ -56,12 +56,12 @@ function load_table (output) {
         if (table_name === "cuencas") {
             table_string = "<thead><tr><th>Cuenca Hidrográfica</th></tr></thead><tbody>";
             parsed_output.forEach(row => table_string = table_string.concat("<tr><td>", row['cuenca'], "</td></tr>"));
-            parsed_output.forEach(row => select_string  = select_string.concat("<option value='", row['cuenca'], "'>", row['cuenca'], "</option>"));
+            parsed_output.forEach(row => select_string  = select_string.concat("<option value='", row['_id'], "'>", row['cuenca'], "</option>"));
         }
         else if (table_name === "metodos") {
             table_string = "<thead><tr><th>Método de pesca</th></tr></thead><tbody>";
             parsed_output.forEach(row => table_string = table_string.concat("<tr><td>", row['metodo'], "</td></tr>"));
-            parsed_output.forEach(row => select_string  = select_string.concat("<option value='", row['metodo'], "'>", row['metodo'], "</option>"));
+            parsed_output.forEach(row => select_string  = select_string.concat("<option value='", row['_id'], "'>", row['metodo'], "</option>"));
         }
     }
     else if (table_name === "pescas") {
@@ -130,62 +130,73 @@ function add_register(output) {
 }
 
 // UPDATE
-// if (table_name !== "index") {
-//     document.querySelector(".crud_update").onclick = function() {
-//         l_args = [];
-//         update_arg_1 = document.getElementById("update_arg_1").value;
-//         l_args.push(update_arg_1);
-//         if (table_name === "cuencas" || table_name === "metodos") {
-//             update_arg_2 = document.getElementById("update_select").value;
-//             l_args.push(update_arg_2);
-//         }
-//         else if (table_name === "pescas") {
-//             update_arg_2 = document.getElementById("update_arg_2").value;
-//             update_arg_3 = document.getElementById("update_arg_3").value;
-//             update_arg_4 = document.getElementById("update_arg_4").value;
-//             update_arg_5 = document.getElementById("update_select").value;
-//             l_args.push(update_arg_2);
-//             l_args.push(update_arg_3);
-//             l_args.push(update_arg_4);
-//             l_args.push(update_arg_5);
-//         }
-//         eel.update(table_name, l_args)(update_register);
-//     }
-// }
-// function update_register(output) {
-//     console.log("UPDATE");
-//     clean_fields();
-//     parsed_output = JSON.parse(output);
-//     if (parsed_output.startsWith("[ERR]")) {
-//         write_error(parsed_output);
-//         return
-//     }
-//     else if (parsed_output.startsWith("[MSG]")) {
-//         write_msg(parsed_output);
-//         update_table();
-//     }
-// }
+if (table_name !== "index") {
+    document.querySelector(".crud_update").onclick = function() {
+        l_args = [];
+        update_arg_1 = document.getElementById("update_select").value;
+
+        if (table_name === "cuencas") {
+            update_arg_2 = document.getElementById("update_arg_1").value;
+            json_args = {
+                "cuenca": update_arg_2
+            }
+        }
+        else if (table_name === "metodos") {
+            update_arg_2 = document.getElementById("update_arg_1").value;
+            json_args = {
+                "metodo": update_arg_2
+            }
+        }
+        else if (table_name === "pescas") {
+            update_arg_2 = document.getElementById("update_arg_1").value;
+            update_arg_3 = document.getElementById("update_arg_2").value;
+            update_arg_4 = document.getElementById("update_arg_3").value;
+            update_arg_5 = document.getElementById("update_arg_4").value;
+
+            json_args = {
+                "cuenca": update_arg_2,
+                "metodo": update_arg_3,
+                "fecha": update_arg_4,
+                "peso_total_pesca": update_arg_5
+            }
+        }
+        eel.update(update_arg_1, json_args, table_name)(update_register);
+    }
+}
+function update_register(output) {
+    console.log("UPDATE");
+    clean_fields();
+    parsed_output = JSON.parse(output);
+    if (parsed_output.startsWith("[ERR]")) {
+        write_error(parsed_output);
+        return
+    }
+    else if (parsed_output.startsWith("[MSG]")) {
+        write_msg(parsed_output);
+        update_table();
+    }
+}
 
 // DELETE
-// if (table_name !== "index") {
-//     document.querySelector(".crud_delete").onclick = function() {
-//         delete_arg_1 = document.getElementById("delete_select").value;
-//         eel.delete(table_name, delete_arg_1)(delete_register);
-//     }
-// }
-// function delete_register(output) {
-//     console.log("DELETE");
-//     clean_fields();
-//     parsed_output = JSON.parse(output);
-//     if (parsed_output.startsWith("[ERR]")) {
-//         write_error(parsed_output);
-//         return
-//     }
-//     else if (parsed_output.startsWith("[MSG]")) {
-//         write_msg(parsed_output);
-//         update_table();
-//     }
-// }
+if (table_name !== "index") {
+    document.querySelector(".crud_delete").onclick = function() {
+        delete_arg_1 = document.getElementById("delete_select").value;
+        eel.delete(delete_arg_1, table_name)(delete_register);
+    }
+}
+function delete_register(output) {
+    console.log("DELETE");
+    clean_fields();
+    parsed_output = JSON.parse(output);
+    if (parsed_output.startsWith("[ERR]")) {
+        write_error(parsed_output);
+        return
+    }
+    else if (parsed_output.startsWith("[MSG]")) {
+        write_msg(parsed_output);
+        update_table();
+    }
+}
 
 
 // OTHER
